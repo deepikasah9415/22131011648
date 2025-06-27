@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Grid, Paper, IconButton } from '@mui/material';
+import { Box, Button, TextField, Typography, Grid, Paper, IconButton, Card, CardContent, Divider, Alert, Stack } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { Link } from 'react-router-dom';
@@ -114,90 +114,110 @@ const ShortenerPage = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 700, mx: 'auto', mt: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h4" gutterBottom>URL Shortener</Typography>
-        <Button component={Link} to="/stats" variant="outlined">View Stats</Button>
-      </Box>
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          {entries.map((entry, idx) => (
-            <Grid item xs={12} key={idx}>
-              <Paper sx={{ p: 2, mb: 1 }}>
-                <Grid container spacing={2} alignItems="center">
-                  <Grid item xs={12} sm={5}>
-                    <TextField
-                      label="Long URL"
-                      value={entry.url}
-                      onChange={e => handleChange(idx, 'url', e.target.value)}
-                      error={!!entry.error.url}
-                      helperText={entry.error.url}
-                      fullWidth
-                      required
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <TextField
-                      label="Validity (min)"
-                      value={entry.validity}
-                      onChange={e => handleChange(idx, 'validity', e.target.value)}
-                      error={!!entry.error.validity}
-                      helperText={entry.error.validity || 'Default: 30'}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <TextField
-                      label="Custom Shortcode"
-                      value={entry.shortcode}
-                      onChange={e => handleChange(idx, 'shortcode', e.target.value)}
-                      error={!!entry.error.shortcode}
-                      helperText={entry.error.shortcode}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={1}>
-                    <IconButton onClick={() => handleRemove(idx)} disabled={entries.length === 1}>
-                      <RemoveCircleOutlineIcon />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-              </Paper>
-            </Grid>
-          ))}
-          <Grid item xs={12}>
-            <Button
-              variant="outlined"
-              startIcon={<AddCircleOutlineIcon />}
-              onClick={handleAdd}
-              disabled={entries.length >= 5}
-            >
-              Add URL
-            </Button>
-          </Grid>
-          {formError && (
-            <Grid item xs={12}>
-              <Typography color="error">{formError}</Typography>
-            </Grid>
-          )}
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary">Shorten URLs</Button>
-          </Grid>
-        </Grid>
-      </form>
-      {results.length > 0 && (
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h5" gutterBottom>Shortened URLs</Typography>
-          {results.map((r, i) => (
-            <Paper key={i} sx={{ p: 2, mb: 1 }}>
-              <Typography><b>Original:</b> {r.original}</Typography>
-              <Typography><b>Short:</b> <a href={r.short} target="_blank" rel="noopener noreferrer">{r.short}</a></Typography>
-              <Typography><b>Created:</b> {r.created}</Typography>
-              <Typography><b>Expires:</b> {r.expires}</Typography>
-            </Paper>
-          ))}
+    <Box sx={{ minHeight: '100vh', bgcolor: '#f5f7fa', py: 6 }}>
+      <Box sx={{ maxWidth: 600, mx: 'auto' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h4" fontWeight={700}>URL Shortener</Typography>
+          <Button component={Link} to="/stats" variant="outlined">View Stats</Button>
         </Box>
-      )}
+        <Card elevation={4} sx={{ borderRadius: 3 }}>
+          <CardContent>
+            <form onSubmit={handleSubmit}>
+              <Stack spacing={2}>
+                {entries.map((entry, idx) => (
+                  <Paper key={idx} sx={{ p: 2, bgcolor: '#f9fafb', borderRadius: 2, boxShadow: 0 }}>
+                    <Grid container spacing={2} alignItems="center">
+                      <Grid item xs={12} sm={5}>
+                        <TextField
+                          label="Long URL"
+                          value={entry.url}
+                          onChange={e => handleChange(idx, 'url', e.target.value)}
+                          error={!!entry.error.url}
+                          helperText={entry.error.url}
+                          fullWidth
+                          required
+                          size="small"
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={3}>
+                        <TextField
+                          label="Validity (min)"
+                          value={entry.validity}
+                          onChange={e => handleChange(idx, 'validity', e.target.value)}
+                          error={!!entry.error.validity}
+                          helperText={entry.error.validity || 'Default: 30'}
+                          fullWidth
+                          size="small"
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={3}>
+                        <TextField
+                          label="Custom Shortcode"
+                          value={entry.shortcode}
+                          onChange={e => handleChange(idx, 'shortcode', e.target.value)}
+                          error={!!entry.error.shortcode}
+                          helperText={entry.error.shortcode}
+                          fullWidth
+                          size="small"
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={1}>
+                        <IconButton onClick={() => handleRemove(idx)} disabled={entries.length === 1} color="error">
+                          <RemoveCircleOutlineIcon />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                ))}
+                <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<AddCircleOutlineIcon />}
+                    onClick={handleAdd}
+                    disabled={entries.length >= 5}
+                  >
+                    Add URL
+                  </Button>
+                  <Button type="submit" variant="contained" color="primary" sx={{ minWidth: 140 }}>
+                    Shorten URLs
+                  </Button>
+                </Box>
+                {formError && <Alert severity="error">{formError}</Alert>}
+              </Stack>
+            </form>
+          </CardContent>
+        </Card>
+        {results.length > 0 && (
+          <Box sx={{ mt: 5 }}>
+            <Divider sx={{ mb: 2 }} />
+            <Typography variant="h5" fontWeight={600} gutterBottom>Shortened URLs</Typography>
+            <Grid container spacing={2}>
+              {results.map((r, i) => (
+                <Grid item xs={12} key={i}>
+                  <Card elevation={2} sx={{ borderRadius: 2 }}>
+                    <CardContent>
+                      <Typography variant="subtitle2" color="text.secondary" gutterBottom>Original:</Typography>
+                      <Typography sx={{ mb: 1 }}>{r.original}</Typography>
+                      <Typography variant="subtitle2" color="text.secondary" gutterBottom>Short:</Typography>
+                      <Typography sx={{ mb: 1 }}>
+                        <a href={r.short} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'underline' }}>{r.short}</a>
+                      </Typography>
+                      <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                          <Typography variant="body2"><b>Created:</b> {r.created}</Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Typography variant="body2"><b>Expires:</b> {r.expires}</Typography>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 };
